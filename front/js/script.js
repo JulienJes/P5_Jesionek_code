@@ -15,7 +15,7 @@ fetch("http://localhost:3000/api/products")
             // liens dynamiques
             let productLink = document.createElement("a");
             document.querySelector(".items").appendChild(productLink);
-            productLink.href = 'product.html?id=${showAPI[article]._id}';
+            productLink.href = 'product.html?id=' + showAPI[article]._id;
 
             // articles dynamiques
             let productArticle = document.createElement("article");
@@ -27,7 +27,7 @@ fetch("http://localhost:3000/api/products")
             productImg.src= showAPI[article].imageUrl;
             productImg.alt= showAPI[article].altTxt;
 
-            // nom de l'article
+            // nom de l'article dynamique
             let productName = document.createElement("h3");
             productArticle.appendChild(productName);
             productName.classList = "productName";
@@ -41,7 +41,7 @@ fetch("http://localhost:3000/api/products")
         }
     })
     .catch(function(error) {
-        console.log(error)
+        console.log(error);
     });
 
 
