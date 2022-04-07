@@ -1,124 +1,119 @@
-// Récupératon de l'URL via la page courante
+// Récupération de l'URL via la page courante
 const str = window.location.href;
-console.log(str);
 const url = new URL(str);
 
-// Récupération de l'id de l'article
+// Récupération de l'id du produit
 const idProduct = url.searchParams.get("id");
 console.log(idProduct);
+let article = "";
 
-// Récupération de l'article depuis l'API
-fetch("http://localhost:3000/api/products/" + idProduct)
-    .then(function(res) {
-        if (res.ok) {
-            return res.json();
-        }
+const colorPicked = document.querySelector("#colors");
+const quantityPicked = document.querySelector("#quantity");
+
+getArticle();
+
+// Récupération du produit via l'API
+function getArticle() {
+    fetch("http://localhost:3000/api/products/" + idProduct)
+    .then((res) => {
+        return res.json();
     })
-    .then(function(showAPI) {
-        const article = showAPI;
+
+    // Répartition des données de l'API dans le DOM
+    .then(async function (showAPI) {
+        article = await showAPI;
         console.table(article);
-
-        // Affichage des éléments du porduit sur la page (même méthode que index)
-        let productImg = document.createElement("img");
-        document.querySelector(".item__img").appendChild(productImg);
-        productImg.src= article.imageUrl;
-        productImg.alt= article.altTxt;
-
-        let productName = document.getElementById('title');
-        productName.innerHTML = article.name;
-
-        let productPrice = document.getElementById('price');
-        productPrice.innerHTML = article.price;
-
-        let productDescription = document.getElementById('description');
-        productDescription.innerHTML = article.description;
-
-        // Gestion des couleurs du produit
-        for (let colors of article.colors){
-            let productColor = document.createElement("option");
-            document.querySelector("#colors").appendChild(productColor);
-            productColor.value = colors;
-            productColor.innerHTML = colors;
+        if (article){
+            getPost(article); // Appel de la fonction d'affichage des éléments du produit
         }
     })
-    .catch(function(error) {
+    .catch((error) => {
+        error = "Erreur de chargement, veuillez rafraichir la page"
         console.log(error);
-        alert("Un problème technique empêche le chargement" + "des informations du produit, veuillez" + "recharger la page."); // un pop-up s'affiche en cas d'erreur de chargement
-    });
+        alert(error);
+    })
+}
+    
+function getPost(article){ // Fonction d'affichage des éléments du produit (même méthode que index)
+    
+    let productImg = document.createElement("img");
+    document.querySelector(".item__img").appendChild(productImg);
+    productImg.src = article.imageUrl;
+    productImg.alt = article.altTxt;
 
-// Vérification: y a-t-il quelque chose dans le localstorage?
-const myStockageJson = localStorage.getItem("item");
-const myStockageJs = JSON.parse(myStockageJson);
+    let productName = document.getElementById('title');
+    productName.innerHTML = article.name;
 
-console.log(myStockageJs);
+    let productPrice = document.getElementById('price');
+    productPrice.innerHTML = article.price;
 
-let myCart=[ { // On imagine le panier comme un array
-        id : " ",
-        quantity: 0,
-        color: " "
-}];    
+    let productDescription = document.getElementById('description');
+    productDescription.innerHTML = article.description;
 
-// Ajout du/des produit(s) au panier
-// Récupération quantité, couleurs & id
-document.getElementById("addToCart").addEventListener("click", function() { // On écoute le clique sur le bouton
-    let quantityPicked = Number(document.getElementById("quantity").value); // Récupération quantité
-    let colorsPicked = document.getElementById("colors").value; // Récupération couleurs
-    let idPicked = idProduct; // Récupération id
-
-    if (quantityPicked > 0 && quantityPicked <= 100 && colorsPicked != "--SVP, choisissez une couleur --") { // Vérification choix de la quantité et des couleurs
-        alert("Vous avez bien choisi une couleur ainsi qu'une quantité pour ce produit.");
-        if(myStockageJs) {
-            if(myStockageJs.lenght === 0) {
-                console.log("le panier est vide");
-                alert("le panier est vide");
-
-                myCart=[ {
-                    id : idPicked,
-                    quantity : quantityPicked,
-                    colors : colorsPicked,
-                }];
-
-                let myCartJson = JSON.stringify(myCart); // On transforme l'objet JS en JSON
-                localStorage.setItem("item", myCartJson); // On le stocke dans le localStorage
-            }else {
-                let addArticle = false;
-                for (let i=0; i<myStockageJs.lenght; i++) { // Ajout de produit tant que i est compris entre 0 et le nombre de colonnes dans l'array
-                    let idProductAlreadyPicked = myStockageJs[i].id;
-                    let colorsProductAlreadyPicked = myStockageJs[i].colors;
-                    if(idProductAlreadyPicked === idPicked && colorsProductAlreadyPicked === colorsPicked) {
-                        myStockageJs[i].quantity = Number(mystockageJS[i].quantity) + quantityPicked;
-                        addArticle = true;
-
-                        myStockageJson = JSON.stringify(myStockageJs);
-                        localStorage.setItem("item", monPanierJson);
-                    }else {
-                        
-                    }
-                }
-                if(addArticle === false){ // ce code ne s'exécute pas si addArticle === true, il s'agit d'ajouter un produit non existant dans le panier
-                    myCart.push( 
-                        {
-                            id : idPicked,
-                            quantity : quantityPicked,
-                            colors : colorsPicked,
-                        }
-                    );
-                    let myCartJson = JSON.stringify(myStockageJs);
-                    localStorage.setItem("item", myCartJson);
-                }
-            }
-            console.table(myCart);
-        }else{
-            myCart=[ {
-                id : idPicked,
-                quantity : quantityPicked,
-                colors : colorsPicked,
-            }];
-            let myCartJson = JSON.stringify(myCart); // On transforme l'objet JS en JSON
-            localStorage.setItem("item", myCartJson); // On le stocke dans le localStorage
-        }
-    }else {
-        alert("Veuillez choisir une couleur ainsi qu'une quantité pour ce produit.")
-        console.log("Choisissez une couleur & une quantité");
+    // Gestion des couleurs
+    for (let colors of article.colors){
+        console.table(colors);
+        let productColors = document.createElement("option");
+        document.querySelector("#colors").appendChild(productColors);
+        productColors.value = colors;
+        productColors.innerHTML = colors;
     }
-})
+    addToCart(article); // Appel de la fonction d'ajout de produit au panier
+}
+
+function addToCart(article) { // Fonction d'ajout du produit au panier
+    const orderBtn = document.querySelector("#addToCart");
+
+    orderBtn.addEventListener("click", (event)=>{ // Ecoute de l'évennement "Ajouter au panier"
+        event.preventDefault;
+        
+        if (quantityPicked.value > 0 && quantityPicked.value <=100 && colorPicked.value != 0) { // Conditions quantité entre 1 et 100 & couleur non null
+        let newColorPicked = colorPicked.value;
+        let newQuantityPicked = quantityPicked.value;
+
+        let infoProduct = {
+            idProductToBeStored: idProduct,
+            colorsProductToBeStored: newColorPicked,
+            quantityProductToBeStored: Number(newQuantityPicked),
+            nameProductToBeStored: article.name,
+            priceProductToBeStored: article.price,
+            descriptionProductToBeStored: article.description,
+            imgProductToBeStored: article.imageUrl,
+            altimgProductToBeStored: article.altTxt
+        };
+        
+        let productLocalStorage = JSON.parse(localStorage.getItem("item")); //Initialisation du local storage
+
+        const popupConfirmation =() =>{ // Pop-up pour rediriger vers le panier ou non
+            if(window.confirm(`Votre commande de ${newQuantityPicked} ${article.name} ${newColorPicked} a été ajoutée au panier. Pour le consulter, cliquez sur OK`)){
+                window.location.href ="cart.html";
+        }
+    }
+
+    // Importation dans le localStorage
+    if (productLocalStorage) { // Si le localStorage n'est pas vide alors
+    const resultFind = productLocalStorage.find((el) => el.idProductToBeStored === idProduct && el.colorsProductToBeStored === newColorPicked); // Le produit ajouté correspond-il au produit déjà présent?
+        if (resultFind) { // Si le produit est le même
+            let newQuantity = parseInt(infoProduct.quantityProductToBeStored) + parseInt(resultFind.quantityProductToBeStored); // On détermine une nouvelle quantité pour ce même produit
+            resultFind.quantityProductToBeStored = newQuantity;
+            localStorage.setItem("item", JSON.stringify(productLocalStorage));
+            console.table(productLocalStorage);
+            popupConfirmation();
+        }else { // S'il s'agit d'un nouveau produit
+            productLocalStorage.push(infoProduct); // On push le nouveau produit, plus simplement
+            localStorage.setItem("item", JSON.stringify(productLocalStorage));
+            console.table(productLocalStorage);
+            popupConfirmation();
+        }
+    }else { // Sinon, c'est que le panier est vide
+        productLocalStorage = [];
+        productLocalStorage.push(infoProduct);
+        localStorage.setItem("item", JSON.stringify(productLocalStorage));
+        console.table(productLocalStorage);
+        popupConfirmation();
+    }}else { // Sinon, erreur, c'est que les conditions ne sont pas remplies
+        alert("Veuillez choisir une quantité entre 1 & 100 ainsi qu'un couleur pour ce produit");
+        console.log("Information(s) manquante(s) : Quantité et/ou Couleur")
+    }
+    });
+}

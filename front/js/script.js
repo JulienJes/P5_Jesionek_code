@@ -5,7 +5,7 @@ fetch("http://localhost:3000/api/products")
             return res.json();
         }
     })
-    .then(function(showAPI) {
+    .then(async function (showAPI) {
         const articles = showAPI;
         console.table(articles);
 
@@ -40,8 +40,10 @@ fetch("http://localhost:3000/api/products")
             productDescription.innerHTML = showAPI[article].description;
         }
     })
-    .catch(function(error) {
+    .catch((error) => {
+        error = "Erreur de chargement, veuillez rafraichir la page"
         console.log(error);
+        alert(error);
     });
 
 
