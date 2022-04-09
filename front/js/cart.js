@@ -1,7 +1,6 @@
 let productsFromLocalStorage = JSON.parse(localStorage.getItem("item")); // Initiatisation du localStorage
 const showEmptyCart = document.querySelector("#cart__items"); // Indique la position de l'affichage d'un panier vide
 console.table(productsFromLocalStorage);
-console.log(productsFromLocalStorage.lenght);
 
 function getCart() { // Fonction d'obtention du panier via le localStorage et de création des éléments HTML pour afficher les produits
     if (productsFromLocalStorage === null || productsFromLocalStorage == 0){ // Code si le panier est vide
@@ -162,6 +161,12 @@ function deleteProduct() { // Fonction de suppression d'un produit
 }
 deleteProduct();
 
+var firstNameOk = false;
+var lastNameOk = false;
+var addressOk = false;
+var cityOk = false;
+var emailOk = false;
+
 function getForm() { // Fonction de gestion du formulaire
     let form = document.querySelector(".cart__order__form"); // Selection du formulaire
 
@@ -190,6 +195,7 @@ function getForm() { // Fonction de gestion du formulaire
         let firstNameErrorMsg = inputFirstName.nextElementSibling;
         if (charRegExp.test(inputFirstName.value)) {
             firstNameErrorMsg.innerHTML = " ";
+            firstNameOk = true;
         } else {
             firstNameErrorMsg.innerHTML = "Veuillez renseigner une valeur correcte pour ce champ.";
         }
@@ -198,6 +204,7 @@ function getForm() { // Fonction de gestion du formulaire
         let lastNameErrorMsg = inputLastName.nextElementSibling;
         if (charRegExp.test(inputLastName.value)) {
             lastNameErrorMsg.innerHTML = " ";
+            lastNameOk = true;
         } else {
             lastNameErrorMsg.innerHTML = "Veuillez renseigner une valeur correcte pour ce champ.";
         }
@@ -206,6 +213,7 @@ function getForm() { // Fonction de gestion du formulaire
         let addressErrorMsg = inputAddress.nextElementSibling;
         if (addressRegExp.test(inputAddress.value)) {
             addressErrorMsg.innerHTML = " ";
+            addressOk = true;
         } else {
             addressErrorMsg.innerHTML = "Veuillez renseigner une valeur correcte pour ce champ.";
         }
@@ -214,6 +222,7 @@ function getForm() { // Fonction de gestion du formulaire
         let cityErrorMsg = inputCity.nextElementSibling;
         if (charRegExp.test(inputCity.value)) {
             cityErrorMsg.innerHTML = " ";
+            cityOk = true;
         } else {
             cityErrorMsg.innerHTML = "Veuillez renseigner une valeur correcte pour ce champ.";
         }
@@ -222,6 +231,7 @@ function getForm() { // Fonction de gestion du formulaire
         let emailErrorMsg = inputEmail.nextElementSibling;
         if (emailRegExp.test(inputEmail.value)) {
             emailErrorMsg.innerHTML = " ";
+            emailOk = true;
         } else {
             emailErrorMsg.innerHTML = "Veuillez renseigner une adresse email pour ce champ.";
         }
@@ -244,7 +254,7 @@ function postForm(){ // Fonction d'envoi des informations saisies dans le localS
 
         //Construction d'un array dans le local storage
         
-        if (inputName.value != "" && inputLastName.value != "" && inputAdress.value != "" && inputCity.value != "" && inputMail.value != ""){ // On vérifie que l'intégralité du formulaire est bien rempli
+        if (firstNameOk == true && lastNameOk == true && addressOk == true && cityOk == true && emailOk == true){ // On vérifie que l'intégralité du formulaire est bien rempli
             let idProducts = [];
             for (let i = 0 ; i < productsFromLocalStorage.length ; i++) {
                 idProducts.push(productsFromLocalStorage[i].idProductToBeStored);
@@ -289,7 +299,7 @@ function postForm(){ // Fonction d'envoi des informations saisies dans le localS
                 alert(error);
             });
         }else{
-            alert("Veuillez remplir l'intégralité du formulaire");
+            alert("Veuillez vérifier le formulaire, tous les champs sont obligatoires");
         }
     })
 }
