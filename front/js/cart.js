@@ -287,18 +287,18 @@ function postForm(){ // Fonction d'envoi des informations saisies dans le localS
                 return res.json();
             })
             .then((data) => {
-                console.log(data);
+                console.log("message data",data);
                 localStorage.clear(); // Clear des produits du localStorage
                 localStorage.setItem("orderId", data.orderId); // Ajout du numéro de commande dans le localStorage
 
-                document.location.href = "confirmation.html"; // Redirection vers la page de confirmation
+                //document.location.href = "confirmation.html"; // Redirection vers la page de confirmation
             })
             .catch((error) => {
                 error = "Erreur de chargement, veuillez rafraichir la page"
                 console.log(error);
                 alert(error);
             });
-        }else{
+        }else {
             alert("Veuillez vérifier le formulaire, tous les champs sont obligatoires");
         }
     })

@@ -112,7 +112,7 @@ function addToCart(article) { // Fonction d'ajout du produit au panier
         console.table(productLocalStorage);
         popupConfirmation();
     }}else { // Sinon, erreur, c'est que les conditions ne sont pas remplies
-        alert("Veuillez choisir une quantité entre 1 & 100 ainsi qu'un couleur pour ce produit");
+        alert("Veuillez choisir une quantité entre 1 & 100 ainsi qu'une couleur pour ce produit");
         console.log("Information(s) manquante(s) : Quantité et/ou Couleur")
     }
     });
