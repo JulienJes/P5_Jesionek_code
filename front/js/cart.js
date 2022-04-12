@@ -287,7 +287,7 @@ function postForm(){ // Fonction d'envoi des informations saisies dans le localS
                 return res.json();
             })
             .then((data) => {
-                console.log("message data",data);
+                console.log(data);
                 localStorage.clear(); // Clear des produits du localStorage
                 localStorage.setItem("orderId", data.orderId); // Ajout du numéro de commande dans le localStorage
 
