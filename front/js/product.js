@@ -1,9 +1,9 @@
 // Récupération de l'URL via la page courante
-const str = window.location.href;
-const url = new URL(str);
+var str = window.location.href;
+var url = new URL(str);
 
 // Récupération de l'id du produit
-const idProduct = url.searchParams.get("id");
+var idProduct = url.searchParams.get("id");
 console.log(idProduct);
 let article = "";
 
