@@ -111,6 +111,8 @@ function getTotals() { // Fonction de calcul des totaux (quantité et prix totau
 }
 getTotals();
 
+var quantityOk = true;
+
 function modifyQuantity() { // Fonction de modification de la quantité
     let quantityToBeModified = document.querySelectorAll(".itemQuantity");
 
@@ -129,10 +131,15 @@ function modifyQuantity() { // Fonction de modification de la quantité
             resultFind.quantityProductToBeStored = quantityModifiedValue;
             productsFromLocalStorage[i].quantityProductToBeStored = resultFind.quantityProductToBeStored;
             console.log(resultFind);
-
-            localStorage.setItem("item", JSON.stringify(productsFromLocalStorage));
+            if (quantityModifiedValue < 1 || quantityModifiedValue > 100){
+                alert("Veuillez rentrer une quantité entre 1 et 100");
+                quantityOk = false;
+            }else{
+                localStorage.setItem("item", JSON.stringify(productsFromLocalStorage));
+                quantityOk = true;
+            }
         
-            location.reload(); // Rafraichissement après modification
+            //location.reload(); // Rafraichissement après modification
         })
     }
 }
@@ -254,7 +261,7 @@ function postForm(){ // Fonction d'envoi des informations saisies dans le localS
 
         //Construction d'un array dans le local storage
         
-        if (firstNameOk == true && lastNameOk == true && addressOk == true && cityOk == true && emailOk == true){ // On vérifie que l'intégralité du formulaire est bien rempli
+        if (firstNameOk == true && lastNameOk == true && addressOk == true && cityOk == true && emailOk == true && quantityOk == true){ // On vérifie que l'intégralité du formulaire et que la quantité sont bien rempli
             let idProducts = [];
             for (let i = 0 ; i < productsFromLocalStorage.length ; i++) {
                 idProducts.push(productsFromLocalStorage[i].idProductToBeStored);
@@ -289,9 +296,10 @@ function postForm(){ // Fonction d'envoi des informations saisies dans le localS
             .then((data) => {
                 console.log(data);
                 localStorage.clear(); // Clear des produits du localStorage
-                localStorage.setItem("orderId", data.orderId); // Ajout du numéro de commande dans le localStorage
+                const orderId = data.orderId;
+                window.location.href = "./confirmation.html" + "?orderId=" + orderId; // Ajout du numéro de commande dans le localStorage
 
-                document.location.href = "confirmation.html"; // Redirection vers la page de confirmation
+                // document.location.href = "confirmation.html"; // Redirection vers la page de confirmation
             })
             .catch((error) => {
                 error = "Erreur de chargement, veuillez rafraichir la page"
@@ -299,7 +307,7 @@ function postForm(){ // Fonction d'envoi des informations saisies dans le localS
                 alert(error);
             });
         }else {
-            alert("Veuillez vérifier le formulaire, tous les champs sont obligatoires");
+            alert("Veuillez vérifier le formulaire, tous les champs sont obligatoires. La quantité de chaque produit doit être comprise entre 1 et 100.");
         }
     })
 }
